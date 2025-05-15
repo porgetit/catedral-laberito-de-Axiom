@@ -1,2 +1,4 @@
-pygame>=2.5.0
-pytest>=8.2.2
+pygame==2.5.0
+pytest==8.2.2
+pyyaml==6.0
+numpy==1.26.4  # Para cálculos matemáticos en el sistema de combate

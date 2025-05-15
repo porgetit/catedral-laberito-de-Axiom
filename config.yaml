@@ -1,0 +1,100 @@
+# Configuración del juego
+debug:
+  hitbox: true  # Muestra las hitboxes de las entidades
+  map_only: false  # Modo debug del mapa (sin enemigos ni jugador)
+
+# Configuración de la ventana
+window:
+  width: 1280
+  height: 720
+  title: "Catedral Laberinto de Axiom"
+  fps: 60
+
+# Configuración del área de juego
+game_area:
+  width: 800
+  height: 600
+  margins:
+    left: 240
+    top: 60
+
+# Configuración del mapa
+map:
+  width: 64
+  height: 64
+  tile_size: 10
+  colors:
+    wall: [50, 50, 50]
+    floor: [100, 100, 100]
+    debug:
+      wall: [255, 0, 0]  # Rojo para paredes en modo debug
+      floor: [0, 255, 0]  # Verde para suelo en modo debug
+      path: [0, 0, 255]  # Azul para caminos en modo debug
+
+# Configuración del jugador
+player:
+  hp: 100
+  mp: 120
+  speed: 5
+  width: 1
+  height: 1
+  color: [0, 255, 0]
+  mp_regen: 5
+  physical_damage: 16
+  magical_damage: 21
+  critical_chance: 0.1
+  critical_multiplier: 1.5
+  colors:
+    body: [0, 255, 0]
+    hitbox: [255, 0, 0]
+
+# Configuración de ataques
+attacks:
+  melee:
+    uppercut:
+      name: "Golpe Ascendente"
+      range_px: 48
+      cast_time: 0.25
+      cooldown: 0.6
+      knockback: 10
+      mp_cost: 0
+    point_blank_explosion:
+      name: "Explosión a Quemarropa"
+      range_px: 56
+      cast_time: 0.5
+      cooldown: 1.5
+      knockback: 15
+      mp_cost: 20
+
+# Configuración de enemigos
+enemies:
+  basic:
+    name: "Enemigo Básico"
+    hp: 50
+    speed: 3
+    damage: 10
+    color: [255, 0, 0]
+  fast:
+    name: "Enemigo Rápido"
+    hp: 30
+    speed: 5
+    damage: 8
+    color: [255, 128, 0]
+  heavy:
+    name: "Enemigo Pesado"
+    hp: 100
+    speed: 2
+    damage: 15
+    color: [128, 0, 0]
+  ranged:
+    name: "Enemigo a Distancia"
+    hp: 40
+    speed: 3
+    damage: 12
+    color: [0, 0, 255]
+  boss:
+    name: "Jefe"
+    hp: 200
+    speed: 2
+    damage: 20
+    color: [128, 0, 128]

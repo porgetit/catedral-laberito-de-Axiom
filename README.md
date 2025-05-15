@@ -1,27 +1,62 @@
+# Catedral Laberinto de Axiom
 
-# Roguelike — Hito 1
+Un juego de acción y aventura donde exploras una catedral laberíntica llena de enemigos y secretos.
 
-Base de código mínima para cumplir el primer hito:
-- Mapa de 64×64 celdas (muros + suelo).
-- Movimiento WASD con vista pasiva.
-- Ataque cuerpo a cuerpo (explosión mágica) con consumo de MP y cooldown.
+## Estado Actual
 
-## Estructura
+El juego está en desarrollo activo. Actualmente implementado:
 
-```
-roguelike_hito1/
-├── main.py
-├── controllers/
-├── models/
-├── views/
-├── services/
-├── assets/
-└── tests/
+- ✅ Sistema de movimiento del jugador
+- ✅ Generación de mapa básica
+- ✅ Sistema de combate básico
+- ✅ Diferentes tipos de enemigos
+- ✅ Sistema de colisiones
+- ⚠️ Sistema de ataques (necesita corrección)
+
+## Requisitos
+
+- Python 3.8 o superior
+- Pygame 2.5.2
+- PyYAML 6.0.1
+
+## Instalación
+
+1. Clona este repositorio
+2. Instala las dependencias:
+```bash
+pip install -r requirements.txt
 ```
 
 ## Ejecución
 
 ```bash
-pip install -r requirements.txt
 python main.py
 ```
+
+## Controles
+
+- WASD: Movimiento
+- Click Izquierdo: Golpe Ascendente
+- Click Derecho: Explosión a Quemarropa
+- ESC: Pausar/Reanudar
+
+## Estructura del Proyecto
+
+```
+.
+├── main.py              # Punto de entrada
+├── config.yaml          # Configuración del juego
+├── requirements.txt     # Dependencias
+├── controllers/         # Controladores
+├── models/             # Modelos de datos
+├── services/           # Servicios
+└── views/              # Vistas
+```
+
+## Próximas Mejoras
+
+- [ ] Corregir sistema de ataques
+- [ ] Mejorar sistema de colisiones
+- [ ] Agregar más tipos de enemigos
+- [ ] Implementar sistema de progresión
+- [ ] Agregar efectos de sonido y música

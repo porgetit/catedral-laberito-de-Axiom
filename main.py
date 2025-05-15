@@ -5,10 +5,11 @@ Inicia PyGame, construye el AppController y empieza el bucle principal.
 """
 import pygame
 from controllers.app_controller import AppController
+from services.config import CONFIG
 
 def run():
     pygame.init()
-    screen = pygame.display.set_mode((1280, 720))
+    screen = pygame.display.set_mode((CONFIG["window"]['width'], CONFIG["window"]['height']))
     pygame.display.set_caption("The Game")
     clock = pygame.time.Clock()
 
