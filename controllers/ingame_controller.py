@@ -92,7 +92,7 @@ class InGameController:
         
         if alive_enemies == 0:
             self.current_round += 1
-            if self.current_round > 2:  # Condición de victoria
+            if self.current_round > 2:  # ANCHOR: Condición de victoria
                 self.has_won = True
                 self.records_service.add_record(self.points)
             else:
