@@ -16,6 +16,14 @@ GAME_HEIGHT = GAME_AREA['height']
 MARGIN_LEFT = GAME_AREA['margins']['left']
 MARGIN_TOP = GAME_AREA['margins']['top']
 
+# Configuración del panel de información
+INFO_PANEL = GAME_AREA['info_panel']
+PANEL_WIDTH = INFO_PANEL['width']
+PANEL_PADDING = INFO_PANEL['padding']
+PANEL_BG = INFO_PANEL['background']
+TEXT_COLOR = INFO_PANEL['text_color']
+TITLE_COLOR = INFO_PANEL['title_color']
+
 class InGameView:
     def __init__(self, screen: pygame.Surface, map_obj, player, enemies):
         self.screen = screen
@@ -36,45 +44,39 @@ class InGameView:
         self.font = pygame.font.Font(None, 24)
         self.title_font = pygame.font.Font(None, 36)
         self.debug_font = pygame.font.Font(None, 20)
+        self.countdown_font = pygame.font.Font(None, 72)
+        self.death_font = pygame.font.Font(None, 48)
 
     def _draw_attack_effects(self):
         """Dibuja los efectos visuales de los ataques."""
+
+        # Calcular el centro del jugador
+        center_x = self.offset_x + int(self.player.x * TILE_SIZE) + TILE_SIZE//2
+        center_y = self.offset_y + int(self.player.y * TILE_SIZE) + TILE_SIZE//2
         # Golpe Ascendente
         if self.player._uppercut.is_executing:
-            dx, dy = self.player._uppercut.direction
-            
-            # Dibujar línea de dirección
-            start_x = self.offset_x + int(self.player.x * TILE_SIZE) + TILE_SIZE//2
-            start_y = self.offset_y + int(self.player.y * TILE_SIZE) + TILE_SIZE//2
-            end_x = start_x + int(dx * self.player._uppercut.range_px)
-            end_y = start_y + int(dy * self.player._uppercut.range_px)
-            
-            # Dibujar área de efecto
-            pygame.draw.line(self.screen, (255, 200, 0), (start_x, start_y), (end_x, end_y), 2)
-            pygame.draw.circle(self.screen, (255, 200, 0, 128), (end_x, end_y), 5)
+            # Dibujar área de efecto circular
+            radius = int(self.player._uppercut.range * TILE_SIZE)
+            pygame.draw.circle(self.screen, (255, 200, 0, 128), (center_x, center_y), radius, 2) # NOTE: El color circulo no se ha establecido en el config.yaml porque este objeto solo se usa para desarrollo, no se renderiza en el juego final pues se reemplaza por el efecto visual del ataque
             
         # Explosión a Quemarropa
-        if self.player._explosion.is_executing:
-            dx, dy = self.player._explosion.direction
+        if self.player._explosion.is_executing:            
+            # Dibujar área de efecto circular
+            radius = int(self.player._explosion.range * TILE_SIZE)
+            pygame.draw.circle(self.screen, (255, 0, 0, 128), (center_x, center_y), radius, 2) # NOTE: El color circulo no se ha establecido en el config.yaml porque este objeto solo se usa para desarrollo, no se renderiza en el juego final pues se reemplaza por el efecto visual del ataque
             
-            # Dibujar línea de dirección
-            start_x = self.offset_x + int(self.player.x * TILE_SIZE) + TILE_SIZE//2
-            start_y = self.offset_y + int(self.player.y * TILE_SIZE) + TILE_SIZE//2
-            end_x = start_x + int(dx * self.player._explosion.range_px)
-            end_y = start_y + int(dy * self.player._explosion.range_px)
             
-            # Dibujar área de efecto
-            pygame.draw.line(self.screen, (255, 0, 0), (start_x, start_y), (end_x, end_y), 2)
-            pygame.draw.circle(self.screen, (255, 0, 0, 128), (end_x, end_y), 8)
-
-    def draw(self, is_paused: bool, game_time: float):
+    def draw(self, is_paused: bool, game_time: float, current_round: int, enemies_remaining: int, countdown_active: bool, countdown_time: float, is_dead: bool, enemies_killed: int):
         """Dibuja el mapa, el jugador, los enemigos y la UI."""
         # Limpiar pantalla con color de fondo
         self.screen.fill((0, 0, 0))  # Fondo negro
         
+        # Dibujar panel de información
+        self._draw_info_panel(game_time, current_round, enemies_remaining)
+        
         # Dibujar área de juego
         game_rect = pygame.Rect(MARGIN_LEFT, MARGIN_TOP, GAME_WIDTH, GAME_HEIGHT)
-        self.screen.fill((30, 30, 30), game_rect)  # Fondo gris oscuro
+        self.screen.fill((30, 30, 30), game_rect)  # TODO: Direccionar el color del fondo a config.yaml
         
         # Dibujar mapa y entidades
         self._draw_game_entities()
@@ -82,8 +84,13 @@ class InGameView:
         # Dibujar efectos de ataques
         self._draw_attack_effects()
         
-        # Dibujar UI
-        self._draw_ui(is_paused, game_time)
+        # Dibujar contador inicial si está activo
+        if countdown_active:
+            self._draw_countdown(countdown_time)
+        
+        # Dibujar pantalla de muerte si el jugador está muerto
+        if is_dead:
+            self._draw_death_screen(game_time, enemies_killed)
         
         # Dibujar mensaje de pausa si está pausado
         if is_paused:
@@ -159,43 +166,80 @@ class InGameView:
                             1
                         )
 
-    def _draw_ui(self, is_paused: bool, game_time: float):
-        """Dibuja la interfaz de usuario."""
-        # Dibujar panel de estadísticas
-        stats_x = 20
-        stats_y = 20
+    def _draw_info_panel(self, game_time: float, current_round: int, enemies_remaining: int):
+        """Dibuja el panel de información en el lado izquierdo."""
+        # Dibujar fondo del panel
+        panel_rect = pygame.Rect(0, 0, PANEL_WIDTH, self.screen.get_height())
+        self.screen.fill(PANEL_BG, panel_rect)
         
-        # Título
-        title = self.title_font.render("Estadísticas del Jugador", True, (255, 255, 255))
-        self.screen.blit(title, (stats_x, stats_y))
+        # Título del panel
+        title = self.title_font.render("Información del Juego", True, TITLE_COLOR)
+        self.screen.blit(title, (PANEL_PADDING, PANEL_PADDING))
         
-        # HP
-        hp_text = self.font.render(f"HP: {self.player.hp}", True, (255, 0, 0))
-        self.screen.blit(hp_text, (stats_x, stats_y + 40))
-        
-        # MP
-        mp_text = self.font.render(f"MP: {self.player.mp}", True, (0, 0, 255))
-        self.screen.blit(mp_text, (stats_x, stats_y + 70))
+        # Información del juego
+        y_offset = PANEL_PADDING * 3
+        line_height = 30
         
         # Tiempo de juego
-        minutes = int(game_time // 60)
-        seconds = int(game_time % 60)
-        time_text = self.font.render(f"Tiempo: {minutes:02d}:{seconds:02d}", True, (255, 255, 255))
-        self.screen.blit(time_text, (stats_x, stats_y + 100))
+        time_text = f"Tiempo: {game_time:.1f}s"
+        time_surface = self.font.render(time_text, True, TEXT_COLOR)
+        self.screen.blit(time_surface, (PANEL_PADDING, y_offset))
+        y_offset += line_height
         
-        # Controles
-        controls_y = MARGIN_TOP + GAME_HEIGHT + 20
-        controls = [
-            "Controles:",
-            "WASD - Movimiento",
-            "Click Izq - Golpe Ascendente",
-            "Click Der - Explosión a Quemarropa",
-            "ESC - Pausar/Reanudar"
-        ]
+        # Ronda actual
+        round_text = f"Ronda: {current_round}"
+        round_surface = self.font.render(round_text, True, TEXT_COLOR)
+        self.screen.blit(round_surface, (PANEL_PADDING, y_offset))
+        y_offset += line_height
         
-        for i, text in enumerate(controls):
-            control_text = self.font.render(text, True, (200, 200, 200))
-            self.screen.blit(control_text, (stats_x, controls_y + i * 30))
+        # Enemigos restantes
+        enemies_text = f"Enemigos: {enemies_remaining}"
+        enemies_surface = self.font.render(enemies_text, True, TEXT_COLOR)
+        self.screen.blit(enemies_surface, (PANEL_PADDING, y_offset))
+        y_offset += line_height
+        
+        # Vida del jugador
+        hp_text = f"HP: {self.player.hp}"
+        hp_surface = self.font.render(hp_text, True, TEXT_COLOR)
+        self.screen.blit(hp_surface, (PANEL_PADDING, y_offset))
+        y_offset += line_height
+        
+        # MP del jugador
+        mp_text = f"MP: {self.player.mp}"
+        mp_surface = self.font.render(mp_text, True, TEXT_COLOR)
+        self.screen.blit(mp_surface, (PANEL_PADDING, y_offset))
+        y_offset += line_height
+        
+        # Información de ataques
+        y_offset += line_height
+        attacks_title = self.font.render("Ataques:", True, TITLE_COLOR)
+        self.screen.blit(attacks_title, (PANEL_PADDING, y_offset))
+        y_offset += line_height
+        
+        # Golpe liviano
+        uppercut_text = f"{CONFIG['attacks']['melee']['uppercut']['name']} (K)"
+        uppercut_surface = self.font.render(uppercut_text, True, TEXT_COLOR)
+        self.screen.blit(uppercut_surface, (PANEL_PADDING, y_offset))
+        y_offset += line_height
+        
+        # Golpe pesado
+        explosion_text = f"{CONFIG['attacks']['melee']['point_blank_explosion']['name']} (L)"
+        explosion_surface = self.font.render(explosion_text, True, TEXT_COLOR)
+        self.screen.blit(explosion_surface, (PANEL_PADDING, y_offset))
+
+    def _draw_countdown(self, countdown_time: float):
+        """Dibuja el contador inicial en el centro de la pantalla."""
+        # Crear una superficie semi-transparente
+        overlay = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(128)
+        self.screen.blit(overlay, (MARGIN_LEFT, MARGIN_TOP))
+        
+        # Dibujar el número del contador
+        count = str(int(countdown_time) + 1)  # +1 para mostrar el número actual
+        count_surface = self.countdown_font.render(count, True, (255, 255, 255))
+        count_rect = count_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2))
+        self.screen.blit(count_surface, count_rect)
 
     def _draw_pause_message(self):
         """Dibuja el mensaje de pausa."""
@@ -214,6 +258,41 @@ class InGameView:
         continue_text = self.font.render("Presiona ESC para continuar", True, (200, 200, 200))
         continue_rect = continue_text.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2 + 40))
         self.screen.blit(continue_text, continue_rect)
+
+    def _draw_death_screen(self, game_time: float, enemies_killed: int):
+        """Dibuja la pantalla de muerte."""
+        # Crear una superficie semi-transparente
+        overlay = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
+        overlay.fill((0, 0, 0)) # TODO: Direccionar el color del fondo a config.yaml
+        overlay.set_alpha(192)  # Más oscuro que la pausa
+        self.screen.blit(overlay, (MARGIN_LEFT, MARGIN_TOP))
+        
+        # Título
+        title = self.death_font.render("¡HAS MUERTO!", True, (255, 0, 0))
+        title_rect = title.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2 - 60))
+        self.screen.blit(title, title_rect)
+        
+        # Estadísticas
+        stats_y = MARGIN_TOP + GAME_HEIGHT//2
+        line_height = 40
+        
+        # Tiempo de juego
+        time_text = f"Tiempo de supervivencia: {game_time:.1f} segundos"
+        time_surface = self.title_font.render(time_text, True, (255, 255, 255))
+        time_rect = time_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y))
+        self.screen.blit(time_surface, time_rect)
+        
+        # Enemigos eliminados
+        kills_text = f"Enemigos eliminados: {enemies_killed}"
+        kills_surface = self.title_font.render(kills_text, True, (255, 255, 255))
+        kills_rect = kills_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y + line_height))
+        self.screen.blit(kills_surface, kills_rect)
+        
+        # Mensaje de reinicio
+        restart_text = "Presiona R para reiniciar"
+        restart_surface = self.font.render(restart_text, True, (200, 200, 200))
+        restart_rect = restart_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y + line_height * 2))
+        self.screen.blit(restart_surface, restart_rect)
 
     def _draw_debug_info(self, map_grid, player, enemies):
         """Dibuja información de debug."""
