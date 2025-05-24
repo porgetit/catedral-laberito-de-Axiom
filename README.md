@@ -1,19 +1,37 @@
-# Catedral Laberinto de Axiom
+# Coliseo de Axiom
 
-Un juego de acción y aventura donde exploras una catedral laberíntica llena de enemigos y secretos.
+Un juego de acción y supervivencia donde te enfrentas a oleadas de enemigos en un coliseo laberíntico. Sobrevive el mayor tiempo posible mientras derrotas enemigos y mejoras tus habilidades.
 
-## Estado Actual
+## Características Implementadas
 
-El juego está en desarrollo activo. Actualmente implementado:
+### Sistema de Combate
+- ✅ Sistema de movimiento fluido con controles WASD
+- ✅ Dos tipos de ataques:
+  - Golpe Ascendente (K): Ataque rápido de corto alcance
+  - Explosión a Quemarropa (L): Ataque potente que consume MP
+- ✅ Sistema de daño crítico con multiplicador
+- ✅ Sistema de knockback para los enemigos
+- ✅ Regeneración automática de HP y MP
 
-- ✅ Sistema de movimiento del jugador
-- ✅ Generación de mapa básica
-- ✅ Sistema de combate básico
-- ✅ Diferentes tipos de enemigos
-- ✅ Sistema de colisiones
-- ⚠️ Sistema de ataques (necesita corrección)
+### Sistema de Enemigos
+- ✅ Múltiples tipos de enemigos:
+  - Básicos: Enemigos estándar
+  - Rápidos: Mayor velocidad de movimiento
+  - Pesados: Mayor resistencia
+  - A distancia: Atacan desde lejos
+  - Jefes: Enemigos más poderosos
+- ✅ Sistema de oleadas progresivas
+- ✅ IA básica de persecución y ataque
 
-## Requisitos
+### Sistema de Juego
+- ✅ Generación de mapa procedural
+- ✅ Sistema de colisiones con el entorno
+- ✅ Panel de información con estadísticas
+- ✅ Sistema de rondas y progresión
+- ✅ Pantalla de muerte con estadísticas
+- ✅ Sistema de pausa
+
+## Requisitos Técnicos
 
 - Python 3.8 o superior
 - Pygame 2.5.2
@@ -36,9 +54,10 @@ python main.py
 ## Controles
 
 - WASD: Movimiento
-- Click Izquierdo: Golpe Ascendente
-- Click Derecho: Explosión a Quemarropa
+- K: Golpe Ascendente
+- L: Explosión a Quemarropa
 - ESC: Pausar/Reanudar
+- R: Reiniciar (después de morir)
 
 ## Estructura del Proyecto
 
@@ -47,16 +66,39 @@ python main.py
 ├── main.py              # Punto de entrada
 ├── config.yaml          # Configuración del juego
 ├── requirements.txt     # Dependencias
-├── controllers/         # Controladores
-├── models/             # Modelos de datos
-├── services/           # Servicios
-└── views/              # Vistas
+├── controllers/         # Controladores de la lógica
+├── models/             # Modelos de datos y entidades
+├── services/           # Servicios y utilidades
+└── views/              # Vistas y renderizado
 ```
+
+## Bugs Conocidos
+
+1. Sistema de Ataques:
+   - La dirección del ataque no apunta correctamente hacia el cursor
+   - El knockback no se aplica en la dirección correcta
+   - Los rangos de los ataques no funcionan como se espera
+
+2. Sistema de Enemigos:
+   - El contador de enemigos eliminados no refleja el total de la partida
+   - Algunos enemigos pueden quedarse atascados en las paredes
 
 ## Próximas Mejoras
 
-- [ ] Corregir sistema de ataques
-- [ ] Mejorar sistema de colisiones
+### Prioridad Alta
+- [ ] Corregir sistema de ataques y knockback
+- [ ] Implementar sistema de progresión de personaje
+- [ ] Mejorar la IA de los enemigos
+- [ ] Agregar efectos visuales para los ataques
+
+### Prioridad Media
+- [ ] Implementar sistema de sonido y música
 - [ ] Agregar más tipos de enemigos
-- [ ] Implementar sistema de progresión
-- [ ] Agregar efectos de sonido y música
+- [ ] Mejorar la generación del mapa
+- [ ] Implementar sistema de power-ups
+
+### Prioridad Baja
+- [ ] Agregar sistema de logros
+- [ ] Implementar modo cooperativo
+- [ ] Agregar más efectos visuales
+- [ ] Mejorar la interfaz de usuario
