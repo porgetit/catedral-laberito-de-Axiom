@@ -46,6 +46,7 @@ class InGameView:
         self.debug_font = pygame.font.Font(None, 20)
         self.countdown_font = pygame.font.Font(None, 72)
         self.death_font = pygame.font.Font(None, 48)
+        self.victory_font = pygame.font.Font(None, 48)
 
     def _draw_attack_effects(self):
         """Dibuja los efectos visuales de los ataques."""
@@ -66,7 +67,7 @@ class InGameView:
             pygame.draw.circle(self.screen, (255, 0, 0, 128), (center_x, center_y), radius, 2) # NOTE: El color circulo no se ha establecido en el config.yaml porque este objeto solo se usa para desarrollo, no se renderiza en el juego final pues se reemplaza por el efecto visual del ataque
             
             
-    def draw(self, is_paused: bool, game_time: float, current_round: int, enemies_remaining: int, countdown_active: bool, countdown_time: float, is_dead: bool, enemies_killed: int):
+    def draw(self, is_paused: bool, game_time: float, current_round: int, enemies_remaining: int, countdown_active: bool, countdown_time: float, is_dead: bool, has_won: bool):
         """Dibuja el mapa, el jugador, los enemigos y la UI."""
         # Limpiar pantalla con color de fondo
         self.screen.fill((0, 0, 0))  # Fondo negro
@@ -90,7 +91,11 @@ class InGameView:
         
         # Dibujar pantalla de muerte si el jugador está muerto
         if is_dead:
-            self._draw_death_screen(game_time, enemies_killed)
+            self._draw_death_screen(game_time)
+        
+        # Dibujar pantalla de victoria si el jugador ha ganado
+        if has_won:
+            self._draw_victory_screen(game_time)
         
         # Dibujar mensaje de pausa si está pausado
         if is_paused:
@@ -180,14 +185,15 @@ class InGameView:
         y_offset = PANEL_PADDING * 3
         line_height = 30
         
-        # Tiempo de juego
-        time_text = f"Tiempo: {game_time:.1f}s"
-        time_surface = self.font.render(time_text, True, TEXT_COLOR)
-        self.screen.blit(time_surface, (PANEL_PADDING, y_offset))
+        # Puntos
+        points = int(game_time)  # Convertir tiempo a puntos (1 punto por segundo)
+        points_text = f"Puntos: {points}"
+        points_surface = self.font.render(points_text, True, TEXT_COLOR)
+        self.screen.blit(points_surface, (PANEL_PADDING, y_offset))
         y_offset += line_height
         
         # Ronda actual
-        round_text = f"Ronda: {current_round}"
+        round_text = f"Ronda: {current_round}/10"
         round_surface = self.font.render(round_text, True, TEXT_COLOR)
         self.screen.blit(round_surface, (PANEL_PADDING, y_offset))
         y_offset += line_height
@@ -241,25 +247,7 @@ class InGameView:
         count_rect = count_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2))
         self.screen.blit(count_surface, count_rect)
 
-    def _draw_pause_message(self):
-        """Dibuja el mensaje de pausa."""
-        # Crear una superficie semi-transparente
-        overlay = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
-        overlay.fill((0, 0, 0))
-        overlay.set_alpha(128)
-        self.screen.blit(overlay, (MARGIN_LEFT, MARGIN_TOP))
-        
-        # Mensaje de pausa
-        pause_text = self.title_font.render("PAUSA", True, (255, 255, 255))
-        text_rect = pause_text.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2))
-        self.screen.blit(pause_text, text_rect)
-        
-        # Instrucción
-        continue_text = self.font.render("Presiona ESC para continuar", True, (200, 200, 200))
-        continue_rect = continue_text.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2 + 40))
-        self.screen.blit(continue_text, continue_rect)
-
-    def _draw_death_screen(self, game_time: float, enemies_killed: int):
+    def _draw_death_screen(self, game_time: float):
         """Dibuja la pantalla de muerte."""
         # Crear una superficie semi-transparente
         overlay = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
@@ -276,23 +264,62 @@ class InGameView:
         stats_y = MARGIN_TOP + GAME_HEIGHT//2
         line_height = 40
         
-        # Tiempo de juego
-        time_text = f"Tiempo de supervivencia: {game_time:.1f} segundos"
-        time_surface = self.title_font.render(time_text, True, (255, 255, 255))
-        time_rect = time_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y))
-        self.screen.blit(time_surface, time_rect)
-        
-        # Enemigos eliminados
-        kills_text = f"Enemigos eliminados: {enemies_killed}"
-        kills_surface = self.title_font.render(kills_text, True, (255, 255, 255))
-        kills_rect = kills_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y + line_height))
-        self.screen.blit(kills_surface, kills_rect)
+        # Puntos finales
+        points = int(game_time)
+        points_text = f"Puntos finales: {points}"
+        points_surface = self.title_font.render(points_text, True, (255, 255, 255))
+        points_rect = points_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y))
+        self.screen.blit(points_surface, points_rect)
         
         # Mensaje de reinicio
         restart_text = "Presiona R para reiniciar"
         restart_surface = self.font.render(restart_text, True, (200, 200, 200))
-        restart_rect = restart_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y + line_height * 2))
+        restart_rect = restart_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y + line_height))
         self.screen.blit(restart_surface, restart_rect)
+
+    def _draw_victory_screen(self, game_time: float):
+        """Dibuja la pantalla de victoria."""
+        # Crear una superficie semi-transparente
+        overlay = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(192)
+        self.screen.blit(overlay, (MARGIN_LEFT, MARGIN_TOP))
+        
+        # Título
+        title = self.victory_font.render("¡VICTORIA!", True, (0, 255, 0))
+        title_rect = title.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2 - 60))
+        self.screen.blit(title, title_rect)
+        
+        # Estadísticas
+        stats_y = MARGIN_TOP + GAME_HEIGHT//2
+        line_height = 40
+        
+        # Puntos finales
+        points = int(game_time)
+        points_text = f"Puntos finales: {points}"
+        points_surface = self.title_font.render(points_text, True, (255, 255, 255))
+        points_rect = points_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y))
+        self.screen.blit(points_surface, points_rect)
+        
+        # Mensaje de reinicio
+        restart_text = "Presiona R para reiniciar"
+        restart_surface = self.font.render(restart_text, True, (200, 200, 200))
+        restart_rect = restart_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y + line_height))
+        self.screen.blit(restart_surface, restart_rect)
+
+    def _draw_pause_message(self):
+        """Dibuja el mensaje de pausa."""
+        # Crear una superficie semi-transparente
+        overlay = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(128)
+        self.screen.blit(overlay, (MARGIN_LEFT, MARGIN_TOP))
+        
+        # Mensaje de pausa
+        pause_text = "PAUSA"
+        pause_surface = self.title_font.render(pause_text, True, (255, 255, 255))
+        pause_rect = pause_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2))
+        self.screen.blit(pause_surface, pause_rect)
 
     def _draw_debug_info(self, map_grid, player, enemies):
         """Dibuja información de debug."""

@@ -23,10 +23,11 @@ class RecordsService:
         with open(self.records_file, 'wb') as f:
             pickle.dump(self.records, f)
     
-    def add_record(self, game_time: float, enemies_killed: int):
+    def add_record(self, game_time: float):
         """Agrega un nuevo registro."""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.records[timestamp] = (game_time, enemies_killed)
+        points = int(game_time)  # Convertir tiempo a puntos
+        self.records[timestamp] = points
         self._save_records()
     
     def get_records(self):

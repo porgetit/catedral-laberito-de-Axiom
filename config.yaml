@@ -62,15 +62,15 @@ attacks:
     uppercut:
       name: "Ataque liviano"
       range: 3
-      cast_time: 0.05
-      cooldown: 0.25
+      cast_time: 1
+      cooldown: 1
       knockback: 16
       mp_cost: 0
     point_blank_explosion:
       name: "Ataque pesado"
       range: 4
-      cast_time: 0.05
-      cooldown: 1
+      cast_time: 2
+      cooldown: 2.5
       knockback: 24
       mp_cost: 5
 

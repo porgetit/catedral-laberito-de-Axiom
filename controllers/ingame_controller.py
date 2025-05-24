@@ -1,12 +1,9 @@
 """Controlador de la escena de juego en curso.
 
-Maneja entrada WASD + ratón y actualiza el modelo Player + Map.
+Maneja entrada WASD y actualiza los modelos Player, Map y Enemies.
 
-TODO: El sistema de ataques necesita ser corregido:
-- La dirección del ataque no apunta correctamente hacia el cursor
-- El knockback no se aplica en la dirección correcta
-- Los rangos de los ataques no funcionan como se espera
 """
+# TODO: El sistema de conteo de puntos no funciona correctamente. Los puntos por tiempo se suman adecuadamente, pero los puntos por enemigos no.
 import pygame
 from models.player import Player
 from models.map_grid import MapGrid
@@ -38,8 +35,9 @@ class InGameController:
         self.last_update_time = time.time()
         self.current_round = 1
         self.enemies_remaining = 0
-        self.total_enemies_killed = 0  # Contador total de enemigos eliminados
         self.is_dead = False
+        self.has_won = False
+        self.points = 0  # Puntos totales (tiempo + enemigos eliminados)
         
         # Estado del contador inicial
         self.countdown_active = True
@@ -92,13 +90,13 @@ class InGameController:
         alive_enemies = sum(1 for enemy in self.enemies if enemy.is_alive)
         self.enemies_remaining = alive_enemies
         
-        # Actualizar contador de enemigos eliminados
-        dead_enemies = sum(1 for enemy in self.enemies if not enemy.is_alive)
-        self.total_enemies_killed = dead_enemies  # Contar solo los enemigos muertos actuales
-        # BUG: El contador de enemigos eliminados no se actualiza correctamente puesto que no refleja el total de enemigos eliminados en la partida sino solo los eliminados en la ronda actual
         if alive_enemies == 0:
             self.current_round += 1
-            self._spawn_enemies()
+            if self.current_round > 2:  # Condición de victoria
+                self.has_won = True
+                self.records_service.add_record(self.points)
+            else:
+                self._spawn_enemies()
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
@@ -107,11 +105,11 @@ class InGameController:
                 if self.is_paused:
                     self.last_update_time = time.time()
                 return
-            elif event.key == pygame.K_r and self.is_dead:
+            elif event.key == pygame.K_r and (self.is_dead or self.has_won):
                 self._reset_game()
                 return
                 
-        if not self.is_paused and not self.is_dead and not CONFIG['debug']['map_only']:
+        if not self.is_paused and not self.is_dead and not self.has_won and not CONFIG['debug']['map_only']:
             if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                 self._handle_movement(event)
             if event.type == pygame.KEYDOWN:
@@ -139,7 +137,7 @@ class InGameController:
 
     def update(self, dt: float):
         """Actualiza el estado del juego."""
-        if not self.is_paused and not self.is_dead:
+        if not self.is_paused and not self.is_dead and not self.has_won:
             # Actualizar tiempo de juego
             current_time = time.time()
             
@@ -153,11 +151,13 @@ class InGameController:
             self.game_time += current_time - self.last_update_time
             self.last_update_time = current_time
             
+            # Actualizar puntos por tiempo (1 punto por segundo)
+            self.points = int(self.game_time)
+            
             if not CONFIG['debug']['map_only']:
                 # Verificar si el jugador está muerto
                 if self.player.hp <= 0 and not self.is_dead:
                     self.is_dead = True
-                    self.records_service.add_record(self.game_time, self.total_enemies_killed)
                     return
                 
                 # Actualizar jugador
@@ -172,8 +172,9 @@ class InGameController:
                     if enemy.is_alive:
                         enemy.update(dt, self.player, self.map)
                         # Verificar si el enemigo es golpeado por algún ataque
-                        enemy.check_attack_hit(self.player._uppercut)
-                        enemy.check_attack_hit(self.player._explosion)
+                        if enemy.check_attack_hit(self.player._uppercut) or enemy.check_attack_hit(self.player._explosion):
+                            if not enemy.is_alive:  # Si el enemigo murió por el ataque
+                                self.points += enemy.level  # Sumar puntos según el nivel del enemigo
                 
                 # Verificar si se completó la ronda
                 self._check_round_completion()
@@ -181,15 +182,15 @@ class InGameController:
     def render(self):
         self.view.draw(
             self.is_paused,
-            self.game_time,
+            self.points,  # Usar puntos en lugar de tiempo
             self.current_round,
             self.enemies_remaining,
             self.countdown_active,
             self.countdown_time - (time.time() - self.countdown_start_time) if self.countdown_active else 0,
             self.is_dead,
-            self.total_enemies_killed
+            self.has_won
         )
 
     def _reset_game(self):
-        """Reinicia el juego después de la muerte."""
+        """Reinicia el juego después de la muerte o victoria."""
         self._initialize_game()  # Reiniciar todo el juego desde cero

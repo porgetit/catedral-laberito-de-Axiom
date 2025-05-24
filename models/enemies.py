@@ -16,6 +16,7 @@ class Enemy(Entity):
     damage: float = 10.0
     attack_range: float = 1.0
     attack_cooldown: float = 1.0
+    level: int = 1  # Nivel del enemigo (1-5)
     _current_cooldown: float = 0.0
     _knockback_active: bool = field(default=False, init=False, repr=False)
     _knockback_start_time: float = field(default=0.0, init=False, repr=False)
@@ -171,72 +172,62 @@ class Enemy(Entity):
             
         return False
 
+@dataclass
 class BasicEnemy(Enemy):
-    """Enemigo básico con estadísticas estándar."""
-    
+    """Enemigo básico de nivel 1."""
     def __init__(self, x: float, y: float):
         super().__init__(
             x=x,
             y=y,
-            hp=50,
-            speed=5.0,
-            damage=10.0,
-            attack_range=1.0,
-            attack_cooldown=1.0
+            speed=CONFIG['enemies']['basic']['speed'],
+            damage=CONFIG['enemies']['basic']['damage'],
+            level=1
         )
 
+@dataclass
 class FastEnemy(Enemy):
-    """Enemigo rápido con menos vida y daño."""
-    
+    """Enemigo rápido de nivel 2."""
     def __init__(self, x: float, y: float):
         super().__init__(
             x=x,
             y=y,
-            hp=30,
-            speed=8.0,
-            damage=5.0,
-            attack_range=1.0,
-            attack_cooldown=0.7
+            speed=CONFIG['enemies']['fast']['speed'],
+            damage=CONFIG['enemies']['fast']['damage'],
+            level=2
         )
 
+@dataclass
 class HeavyEnemy(Enemy):
-    """Enemigo lento pero resistente y con más daño."""
-    
+    """Enemigo pesado de nivel 3."""
     def __init__(self, x: float, y: float):
         super().__init__(
             x=x,
             y=y,
-            hp=100,
-            speed=3.0,
-            damage=20.0,
-            attack_range=1.2,
-            attack_cooldown=1.5
+            speed=CONFIG['enemies']['heavy']['speed'],
+            damage=CONFIG['enemies']['heavy']['damage'],
+            level=3
         )
 
+@dataclass
 class RangedEnemy(Enemy):
-    """Enemigo a distancia con menos vida pero ataque a rango."""
-    
+    """Enemigo a distancia de nivel 4."""
     def __init__(self, x: float, y: float):
         super().__init__(
             x=x,
             y=y,
-            hp=40,
-            speed=4.0,
-            damage=8.0,
-            attack_range=3.0,
-            attack_cooldown=1.2
+            speed=CONFIG['enemies']['ranged']['speed'],
+            damage=CONFIG['enemies']['ranged']['damage'],
+            level=4
         )
 
+@dataclass
 class BossEnemy(Enemy):
-    """Enemigo jefe con estadísticas elevadas."""
-    
+    """Enemigo jefe de nivel 5."""
     def __init__(self, x: float, y: float):
         super().__init__(
             x=x,
             y=y,
-            hp=200,
-            speed=4.0,
-            damage=25.0,
-            attack_range=1.5,
-            attack_cooldown=1.0
+            speed=CONFIG['enemies']['boss']['speed'],
+            damage=CONFIG['enemies']['boss']['damage'],
+            level=5
         ) 
