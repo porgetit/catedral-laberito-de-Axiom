@@ -1,8 +1,4 @@
-
-"""Punto de entrada del juego.
-
-Inicia PyGame, construye el AppController y empieza el bucle principal.
-"""
+"""Punto de entrada del juego."""
 import pygame
 from controllers.app_controller import AppController
 from services.config import CONFIG
@@ -10,22 +6,25 @@ from services.config import CONFIG
 def run():
     pygame.init()
     screen = pygame.display.set_mode((CONFIG["window"]['width'], CONFIG["window"]['height']))
-    pygame.display.set_caption("The Game")
+    pygame.display.set_caption(CONFIG["window"]['title'])
     clock = pygame.time.Clock()
 
     app = AppController(screen)
-
     running = True
+
     while running:
-        dt = clock.tick(60) / 1000  # Delta time en segundos (frame rate fijo 60 FPS aprox.)
+        dt = clock.tick(CONFIG["window"]['fps']) / 1000
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            app.handle_event(event)
+            # El controlador ahora retorna False si debe terminar
+            if not app.handle_event(event):
+                running = False
 
-        app.update(dt)
-        app.render()
+        if running:
+            app.update(dt)
+            app.render()
 
     pygame.quit()
 

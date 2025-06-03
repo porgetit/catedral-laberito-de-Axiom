@@ -14,6 +14,9 @@ from services.records import RecordsService
 import time
 from math import atan2, cos, sin, sqrt, floor
 
+from models.pause_menu import PauseMenuModel
+from views.pause_menu_view import PauseMenuView
+
 TILE_SIZE = CONFIG['map']['tile_size']
 
 class InGameController:
@@ -21,6 +24,10 @@ class InGameController:
         self.screen = screen
         self.records_service = RecordsService()
         self._initialize_game()
+        
+        # Agregar componentes del menú de pausa
+        self.pause_menu_model = PauseMenuModel()
+        self.pause_menu_view = PauseMenuView(screen, self.pause_menu_model)
 
     def _initialize_game(self):
         """Inicializa o reinicia el juego."""
@@ -108,7 +115,20 @@ class InGameController:
             elif event.key == pygame.K_r and (self.is_dead or self.has_won):
                 self._reset_game()
                 return
-                
+
+        # Manejar clicks en el menú de pausa
+        if self.is_paused and event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Click izquierdo
+                for i, rect in enumerate(self.pause_menu_view.get_button_rects()):
+                    if rect.collidepoint(event.pos):
+                        option = self.pause_menu_model.get_button_labels()[i]
+                        if option == "Continuar":
+                            self.is_paused = False
+                            self.last_update_time = time.time()
+                        elif option == "Salir al Menú":
+                            return "menu"  # Señal para volver al menú principal
+                return
+
         if not self.is_paused and not self.is_dead and not self.has_won and not CONFIG['debug']['map_only']:
             if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                 self._handle_movement(event)
@@ -180,9 +200,10 @@ class InGameController:
                 self._check_round_completion()
 
     def render(self):
+        # Primero renderizar el juego
         self.view.draw(
-            self.is_paused,
-            self.points,  # Usar puntos en lugar de tiempo
+            False,  # No mostrar mensaje de pausa, ahora usamos el menú
+            self.points,
             self.current_round,
             self.enemies_remaining,
             self.countdown_active,
@@ -190,6 +211,10 @@ class InGameController:
             self.is_dead,
             self.has_won
         )
+        
+        # Si está pausado, renderizar el menú de pausa encima
+        if self.is_paused:
+            self.pause_menu_view.draw()
 
     def _reset_game(self):
         """Reinicia el juego después de la muerte o victoria."""
