@@ -1,4 +1,3 @@
-pygame==2.5.0
-pytest==8.2.2
-pyyaml==6.0
-numpy==1.26.4  # Para cálculos matemáticos en el sistema de combate
+pygame==2.5.0      # Motor del juego, manejo de gráficos y eventos
+pyyaml==6.0        # Lectura de configuración YAML
+numpy==1.26.4      # Cálculos matemáticos para el sistema de combate

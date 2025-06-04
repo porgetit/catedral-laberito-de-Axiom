@@ -1,63 +1,34 @@
 # 🎮 Coliseo de Axiom
 
-Un roguelike de combate cuerpo a cuerpo con vista superior, donde te enfrentas a oleadas de enemigos en un coliseo gótico-futurista. Sobrevive el mayor tiempo posible mientras derrotas enemigos y mejoras tus habilidades.
+Un roguelike de acción desarrollado en Python usando Pygame, donde te enfrentas a oleadas de enemigos en un coliseo. El proyecto demuestra la implementación de patrones de diseño y arquitectura limpia en el desarrollo de videojuegos.
 
-## 📖 Historia
+## 📖 Sobre el Proyecto
 
-Un estudiante universitario cae rendido de cansancio mientras desarrolla un videojuego para su proyecto final. Al despertar, se encuentra en un extraño coliseo rodeado de niebla, con una espada en sus manos. Una voz misteriosa le informa que debe sobrevivir a las oleadas de enemigos y derrotar al Custodio para ser liberado.
+Coliseo de Axiom es un proyecto académico desarrollado como parte del curso de programación gráfica en la Universidad Tecnológica de Pereira. El juego implementa conceptos fundamentales de la programación de videojuegos como:
 
-## 🎯 Características Implementadas
+- Arquitectura MVC
+- Sistemas de colisiones
+- IA básica para enemigos
+- Gestión de estados de juego
+- Persistencia de datos
 
-### Sistema de Combate
-- ✅ Sistema de movimiento fluido con controles WASD o flechas
-- ✅ Dos tipos de ataques:
-  - Golpe liviano (K/X): Ataque rápido de corto alcance
-  - Golpe pesado (L/C): Ataque potente que consume MP
-- ✅ Sistema de daño crítico con multiplicador
-- ✅ Sistema de knockback para los enemigos
-- ✅ Regeneración automática de HP y MP
+## 🛠️ Tecnologías
 
-### Sistema de Enemigos
-- ✅ Múltiples tipos de enemigos: (Pendiente de ajustar en diseño)
-  - Reclutas: Enemigos básicos con movimiento y ataques lentos
-  - Soldados: Más rápidos que los reclutas, ataques más coordinados
-  - Caballeros: Resistentes, ataques potentes pero predecibles
-  - Campeones: Rápidos y fuertes, combinan ataques y defensas
-  - Custodio: Jefe final con patrones de ataque complejos
-- ✅ Sistema de oleadas progresivas
-- ✅ IA básica de persecución y ataque
+- Python 3.8+
+- Pygame 2.5.0
+- PyYAML 6.0
+- Numpy 1.26.4
 
-### Sistema de Juego
-- ✅ Generación de mapa procedural
-- ✅ Sistema de colisiones con el entorno
-- ✅ Panel de información con estadísticas
-- ✅ Sistema de rondas y progresión
-- ✅ Pantalla de muerte con estadísticas
-- ✅ Sistema de pausa
+## 📚 Documentación
 
-## 🎮 Controles
-
-| Tecla | Función |
-|-------|---------|
-| W/↑ | Movimiento hacia arriba |
-| A/← | Movimiento hacia la izquierda |
-| S/↓ | Movimiento hacia abajo |
-| D/→ | Movimiento hacia la derecha |
-| K/X | Golpe liviano |
-| L/C | Golpe pesado |
-| ESC | Pausar/Reanudar |
-| R | Reiniciar (después de morir) |
-
-## 🛠️ Requisitos Técnicos
-
-- Python 3.8 o superior
-- Pygame 2.5.2
-- PyYAML 6.0.1
+- [Game Design Document](gdd.md) - Documento detallado de diseño del juego
+- [config.yaml](config.yaml) - Configuración del juego
 
 ## 📥 Instalación
 
 1. Clona este repositorio
 2. Instala las dependencias:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -72,41 +43,33 @@ python main.py
 
 ```
 .
-├── main.py              # Punto de entrada
-├── config.yaml          # Configuración del juego
-├── requirements.txt     # Dependencias
-├── controllers/         # Controladores de la lógica
-├── models/             # Modelos de datos y entidades
+├── main.py             # Punto de entrada
+├── gdd.md              # Documento de diseño
+├── config.yaml         # Configuración
+├── controllers/        # Lógica de control
+├── models/             # Entidades y datos
 ├── services/           # Servicios y utilidades
-├── views/              # Vistas y renderizado
-├── assets/             # Recursos gráficos y de audio
-└── tests/              # Pruebas unitarias
+├── views/              # Renderizado
+└── assets/             # Recursos multimedia
 ```
+## 👥 Equipo
 
-## 🐛 Bugs Conocidos
+Desarrollo
 
-1. Sistema de Enemigos:
-   - El contador de enemigos eliminados no refleja el total de la partida
-   - Algunos enemigos pueden quedarse atascados en las paredes
+- Kevin Esguerra Cardona
+  - Arquitectura del juego
+  - Sistemas core (combate, enemigos, colisiones)
+  - Documentación técnica
 
-## 📋 Próximas Mejoras
+Arte y Sonido
 
-### Prioridad Alta
-- [ ] Implementar sistema de progresión de personaje
-- [ ] Mejorar la IA de los enemigos
-- [ ] Agregar efectos visuales para los ataques
+- Juan Pablo Sánchez Zapata
+  - Diseño visual
+  - Efectos de sonido
+  - Música
 
-### Prioridad Media
-- [ ] Implementar sistema de sonido y música
-- [ ] Mejorar la generación del mapa
-- [ ] Implementar sistema de power-ups (Tentativo)
+## 📄 Licencia
+Este proyecto es parte de un trabajo académico y no está licenciado para uso comercial.
 
-### Prioridad Baja
-- [ ] Agregar más efectos visuales
-- [ ] Mejorar la interfaz de usuario
-
-## 👥 Créditos
-
-- **Desarrollo y Diseño**: Kevin Esguerra Cardona
-- **Arte y Animaciones**: Juan Pablo Sánchez Zapata
-- **Sonido y Música**: Juan Pablo Sánchez Zapata 
+## 🤝 Agradecimientos
+Agradecemos a la Universidad EAFIT y al profesor del curso de Desarrollo de Videojuegos por su guía y apoyo durante el desarrollo de este proyecto.
