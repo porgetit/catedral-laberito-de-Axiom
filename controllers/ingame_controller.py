@@ -16,7 +16,7 @@ from services.config import CONFIG
 from services.records import RecordsService
 
 TILE_SIZE = CONFIG['map']['tile_size']
-VICTORY_ROUND = 2
+VICTORY_ROUND = 10
 
 class InGameController:
     def __init__(self, screen: pygame.Surface):
