@@ -61,10 +61,10 @@ Implementados 5 niveles de enemigos con diferentes estadísticas:
 | Nivel | HP | Velocidad | Daño | Color |
 |-------|-----|-----------|-------|--------|
 | 1 | 100 | 5 | 5 | Rojo |
-| 2 | 120 | 4 | 10 | Naranja |  
-| 3 | 140 | 3 | 15 | Rojo Oscuro |
-| 4 | 160 | 2 | 20 | Azul |
-| 5 | 200 | 1 | 50 | Morado |
+| 2 | 120 | 4 | 10 | Verde |  
+| 3 | 140 | 3 | 15 | Azul |
+| 4 | 160 | 2 | 20 | Amarillo |
+| 5 | 200 | 1 | 50 | Magenta |
 
 #### Comportamiento de Enemigos
 - Persiguen al jugador activamente
