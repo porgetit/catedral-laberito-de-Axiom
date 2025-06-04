@@ -75,11 +75,11 @@ class Attack:
         """Devuelve la dirección del ataque."""
         return self._direction
 
-class Uppercut(Attack):
-    """Ataque básico de golpe ascendente."""
+class basicAttack(Attack):
+    """Ataque básico del jugador."""
     
     def __init__(self):
-        config = CONFIG['attacks']['melee']['uppercut']
+        config = CONFIG['attacks']['melee']['basic']
         super().__init__(
             name=config['name'],
             damage=CONFIG['player']['physical_damage'],
@@ -91,11 +91,11 @@ class Uppercut(Attack):
             critical_multiplier=CONFIG['player']['critical_multiplier']
         )
 
-class PointBlankExplosion(Attack):
-    """Ataque mágico de explosión a quemarropa."""
+class heavyAttack(Attack):
+    """Ataque pesado del jugador."""
     
     def __init__(self):
-        config = CONFIG['attacks']['melee']['point_blank_explosion']
+        config = CONFIG['attacks']['melee']['heavy']
         super().__init__(
             name=config['name'],
             damage=CONFIG['player']['magical_damage'],

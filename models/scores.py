@@ -1,15 +1,16 @@
+from services.records import RecordsService
+
 class ScoresModel:
-    def __init__(self, records_service):
+    def __init__(self, records_service: RecordsService):
         self.records_service = records_service
         self.title = "Mejores Puntuaciones"
-        
-    def get_sorted_scores(self):
-        """Obtiene los puntajes ordenados de mayor a menor."""
-        records = self.records_service.get_records()
-        # Ordenar por puntaje (segundo elemento de cada tupla) de mayor a menor
-        sorted_scores = sorted(
-            [(date, score) for date, score in records.items()],
-            key=lambda x: x[1], 
-            reverse=True
-        )
-        return sorted_scores[:10]  # Retornar solo los 10 mejores
+
+    def get_top_scores(self, count: int = 10):
+        """
+        Obtiene los 'count' mejores puntajes ordenados de mayor a menor.
+        Devuelve una lista de tuplas (timestamp, score).
+        """
+        all_sorted_scores = self.records_service.get_sorted_records()
+
+        # Retornar solo los 'count' mejores
+        return all_sorted_scores[:count]

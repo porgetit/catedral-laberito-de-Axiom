@@ -1,14 +1,12 @@
 """Modelo del jugador con movimiento y ataques básicos.
 """
-from dataclasses import dataclass, field
 from models.entity import Entity
 from models.hitbox import Hitbox
+from models.attacks import basicAttack, heavyAttack
 from services.config import CONFIG
-from models.attacks import Uppercut, PointBlankExplosion
+from dataclasses import dataclass, field
 from math import floor, ceil
 import time
-
-MOVE_SPEED = CONFIG['player']['speed']  # unidades por segundo
 
 @dataclass
 class Player(Entity):
@@ -16,10 +14,10 @@ class Player(Entity):
     mp: int = CONFIG['player']['mp']
     width: int = CONFIG['player']['width']
     height: int = CONFIG['player']['height']
-    _uppercut_cooldown: float = field(default=0.0, init=False, repr=False)
-    _explosion_cooldown: float = field(default=0.0, init=False, repr=False)
-    _uppercut: Uppercut = field(default_factory=Uppercut, init=False, repr=False)
-    _explosion: PointBlankExplosion = field(default_factory=PointBlankExplosion, init=False, repr=False)
+    _basic_attack_cooldown: float = field(default=0.0, init=False, repr=False)
+    _heavy_attack_cooldown: float = field(default=0.0, init=False, repr=False)
+    _basic_attack: basicAttack = field(default_factory=basicAttack, init=False, repr=False)
+    _heavy_attack: heavyAttack = field(default_factory=heavyAttack, init=False, repr=False)
     _last_regen_time: float = field(default_factory=time.time, init=False, repr=False)
 
     # Input flags
@@ -30,8 +28,8 @@ class Player(Entity):
 
     def update(self, dt: float, map_obj):
         # Movimiento propuesto
-        dx = (self.move_right - self.move_left) * MOVE_SPEED * dt
-        dy = (self.move_down - self.move_up) * MOVE_SPEED * dt
+        dx = (self.move_right - self.move_left) * CONFIG['player']['speed'] * dt
+        dy = (self.move_down - self.move_up) * CONFIG['player']['speed'] * dt
 
         # Verificar colisiones por separado en X e Y
         new_x = self.x + dx
@@ -46,10 +44,10 @@ class Player(Entity):
             self.y = new_y
 
         # Enfriamiento de los ataques
-        if self._uppercut_cooldown > 0:
-            self._uppercut_cooldown -= dt
-        if self._explosion_cooldown > 0:
-            self._explosion_cooldown -= dt
+        if self._basic_attack_cooldown > 0:
+            self._basic_attack_cooldown -= dt
+        if self._heavy_attack_cooldown > 0:
+            self._heavy_attack_cooldown -= dt
 
         # Regeneración de HP y MP
         current_time = time.time()
@@ -87,22 +85,22 @@ class Player(Entity):
             return False
         return True
         
-    def cast_uppercut(self, direction: tuple[float, float] = None):
+    def cast_basic_attack(self, direction: tuple[float, float] = None):
         """Ejecuta el ataque de golpe ascendente."""
-        if self._uppercut_cooldown <= 0:
+        if self._basic_attack_cooldown <= 0:
             # Calcular el centro del jugador
             center_x = self.x + (self.width / 2)
             center_y = self.y + (self.height / 2)
-            self._uppercut.execute(center_x, center_y, direction)
-            self._uppercut_cooldown = self._uppercut.cooldown
+            self._basic_attack.execute(center_x, center_y, direction)
+            self._basic_attack_cooldown = self._basic_attack.cooldown
             
-    def cast_point_blank_explosion(self, direction: tuple[float, float] = None):
+    def cast_heavy_attack(self, direction: tuple[float, float] = None):
         """Ejecuta el ataque de explosión a quemarropa."""
-        if self._explosion_cooldown <= 0 and self.mp >= self._explosion.mp_cost:
+        if self._heavy_attack_cooldown <= 0 and self.mp >= self._heavy_attack.mp_cost:
             # Calcular el centro del jugador
             center_x = self.x + (self.width / 2)
             center_y = self.y + (self.height / 2)
-            self.mp -= self._explosion.mp_cost
-            self._explosion.execute(center_x, center_y, direction)
-            self._explosion_cooldown = self._explosion.cooldown
+            self.mp -= self._heavy_attack.mp_cost
+            self._heavy_attack.execute(center_x, center_y, direction)
+            self._heavy_attack_cooldown = self._heavy_attack.cooldown
             

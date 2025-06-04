@@ -2,8 +2,6 @@
 """
 import pygame
 from services.config import CONFIG
-from models.enemies import BasicEnemy, FastEnemy, HeavyEnemy, RangedEnemy, BossEnemy
-import math
 
 # Constantes de configuración
 TILE_SIZE = CONFIG['map']['tile_size']
@@ -55,15 +53,15 @@ class InGameView:
         center_x = self.offset_x + int(self.player.x * TILE_SIZE) + TILE_SIZE//2
         center_y = self.offset_y + int(self.player.y * TILE_SIZE) + TILE_SIZE//2
         # Golpe Ascendente
-        if self.player._uppercut.is_executing:
+        if self.player._basic_attack.is_executing:
             # Dibujar área de efecto circular
-            radius = int(self.player._uppercut.range * TILE_SIZE)
+            radius = int(self.player._basic_attack.range * TILE_SIZE)
             pygame.draw.circle(self.screen, (255, 200, 0, 128), (center_x, center_y), radius, 2) # NOTE: El color circulo no se ha establecido en el config.yaml porque este objeto solo se usa para desarrollo, no se renderiza en el juego final pues se reemplaza por el efecto visual del ataque
             
         # Explosión a Quemarropa
-        if self.player._explosion.is_executing:            
+        if self.player._heavy_attack.is_executing:            
             # Dibujar área de efecto circular
-            radius = int(self.player._explosion.range * TILE_SIZE)
+            radius = int(self.player._heavy_attack.range * TILE_SIZE)
             pygame.draw.circle(self.screen, (255, 0, 0, 128), (center_x, center_y), radius, 2) # NOTE: El color circulo no se ha establecido en el config.yaml porque este objeto solo se usa para desarrollo, no se renderiza en el juego final pues se reemplaza por el efecto visual del ataque
             
             
@@ -121,19 +119,8 @@ class InGameView:
                 px = self.offset_x + int(enemy.x * TILE_SIZE)
                 py = self.offset_y + int(enemy.y * TILE_SIZE)
                 
-                # Seleccionar color según el tipo de enemigo
-                if isinstance(enemy, BasicEnemy):
-                    color = tuple(CONFIG['enemies']['basic']['color'])
-                elif isinstance(enemy, FastEnemy):
-                    color = tuple(CONFIG['enemies']['fast']['color'])
-                elif isinstance(enemy, HeavyEnemy):
-                    color = tuple(CONFIG['enemies']['heavy']['color'])
-                elif isinstance(enemy, RangedEnemy):
-                    color = tuple(CONFIG['enemies']['ranged']['color'])
-                elif isinstance(enemy, BossEnemy):
-                    color = tuple(CONFIG['enemies']['boss']['color'])
-                else:
-                    color = tuple(CONFIG['enemies']['basic']['color'])
+                # Obtener el color del enemigo según su nivel
+                color = tuple(CONFIG['enemies'][f'level_{enemy.level}']['color'])
                 
                 self.screen.fill(color, pygame.Rect(px, py, TILE_SIZE, TILE_SIZE))
                 
@@ -223,15 +210,15 @@ class InGameView:
         y_offset += line_height
         
         # Golpe liviano
-        uppercut_text = f"{CONFIG['attacks']['melee']['uppercut']['name']} (K)"
-        uppercut_surface = self.font.render(uppercut_text, True, TEXT_COLOR)
-        self.screen.blit(uppercut_surface, (PANEL_PADDING, y_offset))
+        basic_attack_text = f"{CONFIG['attacks']['melee']['basic']['name']} (K)"
+        basic_attack_surface = self.font.render(basic_attack_text, True, TEXT_COLOR)
+        self.screen.blit(basic_attack_surface, (PANEL_PADDING, y_offset))
         y_offset += line_height
         
         # Golpe pesado
-        explosion_text = f"{CONFIG['attacks']['melee']['point_blank_explosion']['name']} (L)"
-        explosion_surface = self.font.render(explosion_text, True, TEXT_COLOR)
-        self.screen.blit(explosion_surface, (PANEL_PADDING, y_offset))
+        heavy_attack_text = f"{CONFIG['attacks']['melee']['heavy']['name']} (L)"
+        heavy_attack_surface = self.font.render(heavy_attack_text, True, TEXT_COLOR)
+        self.screen.blit(heavy_attack_surface, (PANEL_PADDING, y_offset))
 
     def _draw_countdown(self, countdown_time: float):
         """Dibuja el contador inicial en el centro de la pantalla."""

@@ -3,8 +3,8 @@ import pygame
 from controllers.ingame_controller import InGameController
 from controllers.menu_controller import MenuController
 from models.menu import MenuModel
-from views.menu_view import MenuView
 from models.scores import ScoresModel
+from views.menu_view import MenuView
 from views.scores_view import ScoresView
 from services.records import RecordsService
 

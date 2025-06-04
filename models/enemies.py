@@ -1,6 +1,6 @@
 """Sistema de enemigos del juego.
 
-Contiene la clase base Enemy y sus implementaciones concretas.
+Contiene la clase base Enemy que maneja todos los tipos de enemigos según su nivel.
 """
 from dataclasses import dataclass, field
 from models.entity import Entity
@@ -11,19 +11,38 @@ import time
 
 @dataclass
 class Enemy(Entity):
-    """Clase base para todos los enemigos."""
+    """Clase base para todos los enemigos.
+    """
     speed: float = 5.0
     damage: float = 10.0
     attack_range: float = 1.0
     attack_cooldown: float = 1.0
-    level: int = 1  # Nivel del enemigo (1-5)
+    level: int = 1
     _current_cooldown: float = 0.0
     _knockback_active: bool = field(default=False, init=False, repr=False)
     _knockback_start_time: float = field(default=0.0, init=False, repr=False)
     _knockback_direction: tuple[float, float] = field(default=(0.0, 0.0), init=False, repr=False)
     _knockback_force: float = field(default=0.0, init=False, repr=False)
     _knockback_velocity: tuple[float, float] = field(default=(0.0, 0.0), init=False, repr=False)
-    
+
+    def __init__(self, x: float, y: float, level: int):
+        """Inicializa un enemigo con estadísticas basadas en su nivel."""
+        enemy_types = {
+            1: 'level_1',
+            2: 'level_2',
+            3: 'level_3',
+            4: 'level_4',
+            5: 'level_5'
+        }
+        
+        enemy_type = enemy_types[level]
+        super().__init__(x=x, y=y)
+        
+        # Configurar estadísticas según el nivel
+        self.speed = CONFIG['enemies'][enemy_type]['speed']
+        self.damage = CONFIG['enemies'][enemy_type]['damage']
+        self.level = level
+
     def update(self, dt: float, player, map_obj):
         """Actualiza el estado del enemigo."""
         if not self.is_alive:
@@ -171,63 +190,3 @@ class Enemy(Entity):
             return True
             
         return False
-
-@dataclass
-class BasicEnemy(Enemy):
-    """Enemigo básico de nivel 1."""
-    def __init__(self, x: float, y: float):
-        super().__init__(
-            x=x,
-            y=y,
-            speed=CONFIG['enemies']['basic']['speed'],
-            damage=CONFIG['enemies']['basic']['damage'],
-            level=1
-        )
-
-@dataclass
-class FastEnemy(Enemy):
-    """Enemigo rápido de nivel 2."""
-    def __init__(self, x: float, y: float):
-        super().__init__(
-            x=x,
-            y=y,
-            speed=CONFIG['enemies']['fast']['speed'],
-            damage=CONFIG['enemies']['fast']['damage'],
-            level=2
-        )
-
-@dataclass
-class HeavyEnemy(Enemy):
-    """Enemigo pesado de nivel 3."""
-    def __init__(self, x: float, y: float):
-        super().__init__(
-            x=x,
-            y=y,
-            speed=CONFIG['enemies']['heavy']['speed'],
-            damage=CONFIG['enemies']['heavy']['damage'],
-            level=3
-        )
-
-@dataclass
-class RangedEnemy(Enemy):
-    """Enemigo a distancia de nivel 4."""
-    def __init__(self, x: float, y: float):
-        super().__init__(
-            x=x,
-            y=y,
-            speed=CONFIG['enemies']['ranged']['speed'],
-            damage=CONFIG['enemies']['ranged']['damage'],
-            level=4
-        )
-
-@dataclass
-class BossEnemy(Enemy):
-    """Enemigo jefe de nivel 5."""
-    def __init__(self, x: float, y: float):
-        super().__init__(
-            x=x,
-            y=y,
-            speed=CONFIG['enemies']['boss']['speed'],
-            damage=CONFIG['enemies']['boss']['damage'],
-            level=5
-        ) 
