@@ -1,0 +1,113 @@
+# Configuración del juego
+debug:
+  hitbox: false  # Muestra las hitboxes de las entidades
+
+# Configuración de la ventana
+window:
+  width: 1280
+  height: 720
+  title: "Coliseo de Axiom"
+  fps: 60
+
+# Configuración del área de juego
+game_area:
+  width: 800
+  height: 600
+  margins:
+    left: 400  # Aumentado para dar espacio al panel de información
+    top: 60
+  info_panel:
+    width: 360  # Ancho del panel de información
+    padding: 20  # Espaciado interno del panel
+    background: [40, 40, 40]  # Color de fondo del panel
+    text_color: [255, 255, 255]  # Color del texto
+    title_color: [200, 200, 200]  # Color de los títulos
+
+# Configuración del mapa
+map:
+  width: 64
+  height: 64
+  tile_size: 10
+  colors:
+    wall: [50, 50, 50]
+    floor: [100, 100, 100]
+    debug:
+      wall: [255, 0, 0]  # Rojo para paredes en modo debug
+      floor: [0, 255, 0]  # Verde para suelo en modo debug
+      path: [0, 0, 255]  # Azul para caminos en modo debug
+
+# Configuración del jugador
+player:
+  hp: 100
+  hp_regen: 0.5 # Porcentaje de regeneración de HP por unidad de tiempo
+  mp: 100
+  mp_regen: 0.5 # Porcentaje de regeneración de MP por unidad de tiempo
+  time_to_regen: 1 # Tiempo en segundos para que se produzca la regeneración
+  speed: 4.9
+  width: 1
+  height: 1
+  color: [0, 255, 0]
+  physical_damage: 20
+  magical_damage: 60
+  critical_chance: 0.25
+  critical_multiplier: 5
+  colors:
+    body: [0, 255, 0]
+    hitbox: [255, 0, 0]
+
+# Configuración de ataques
+attacks:
+  melee:
+    basic:
+      name: "Ataque liviano"
+      range: 3
+      cast_time: 1
+      cooldown: 1.125
+      knockback: 8
+      mp_cost: 0
+    heavy:
+      name: "Ataque pesado"
+      range: 4
+      cast_time: 2
+      cooldown: 2.5
+      knockback: 12
+      mp_cost: 5
+
+# Configuración de knockback
+knockback:
+  steps: 60  # Número de pasos para el knockback
+  duration: 0.5 # Duración total del knockback en segundos
+  friction: 0.9  # Factor de fricción para suavizar el movimiento
+
+# Configuración de enemigos
+enemies:
+  level_1:
+    name: "Enemigo Nivel 1"
+    hp: 100
+    speed: 6
+    damage: 5
+    color: [255, 0, 0]
+  level_2:
+    name: "Enemigo Nivel 2"
+    hp: 120
+    speed: 5
+    damage: 10
+    color: [255, 128, 0]
+  level_3:
+    name: "Enemigo Nivel 3"
+    hp: 140
+    speed: 5
+    damage: 15
+    color: [128, 0, 0]
+  level_4:
+    name: "Enemigo Nivel 4"
+    hp: 160
+    speed: 5
+    damage: 20
+    color: [0, 0, 255]
+  level_5:
+    name: "Enemigo Nivel 5"
+    hp: 200
+    speed: 5
+    damage: 50
+    color: [128, 0, 128]
