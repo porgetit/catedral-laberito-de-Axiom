@@ -1,3 +1,0 @@
-pygame==2.5.0      # Motor del juego, manejo de gráficos y eventos
-pyyaml==6.0        # Lectura de configuración YAML
-numpy==1.26.4      # Cálculos matemáticos para el sistema de combate
