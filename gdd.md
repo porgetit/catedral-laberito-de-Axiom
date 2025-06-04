@@ -75,7 +75,7 @@ Implementados 5 niveles de enemigos con diferentes estadísticas:
 
 ### Sistema de Rondas
 - 10 rondas totales
-- Cantidad de enemigos por ronda: 2^ronda - 1
+- Cantidad de enemigos por ronda: progresión logarítmica 
 - Victoria al completar todas las rondas
 - Los enemigos se distribuyen por nivel según la fórmula: enemigos_nivel = floor(total_enemigos / nivel)
 
