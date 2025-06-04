@@ -62,7 +62,7 @@ attacks:
       name: "Ataque liviano"
       range: 3
       cast_time: 1
-      cooldown: 1
+      cooldown: 1.125
       knockback: 8
       mp_cost: 0
     heavy:
@@ -84,30 +84,30 @@ enemies:
   level_1:
     name: "Enemigo Nivel 1"
     hp: 100
-    speed: 5
+    speed: 6
     damage: 5
     color: [255, 0, 0]
   level_2:
     name: "Enemigo Nivel 2"
     hp: 120
-    speed: 4
+    speed: 5
     damage: 10
     color: [255, 128, 0]
   level_3:
     name: "Enemigo Nivel 3"
     hp: 140
-    speed: 3
+    speed: 5
     damage: 15
     color: [128, 0, 0]
   level_4:
     name: "Enemigo Nivel 4"
     hp: 160
-    speed: 2
+    speed: 5
     damage: 20
     color: [0, 0, 255]
   level_5:
     name: "Enemigo Nivel 5"
     hp: 200
-    speed: 1
+    speed: 5
     damage: 50
     color: [128, 0, 128]

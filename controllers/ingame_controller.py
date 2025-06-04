@@ -5,7 +5,7 @@ Maneja entrada WASD y actualiza los modelos Player, Map y Enemies.
 """
 import pygame
 import time
-from math import floor
+from math import floor, log
 from models.player import AnimatedPlayer
 from models.map_grid import MapGrid
 from models.pause_menu import PauseMenuModel
@@ -14,6 +14,7 @@ from views.ingame_view import InGameView
 from views.pause_menu_view import PauseMenuView
 from services.config import CONFIG
 from services.records import RecordsService
+from services.audio_manager import AudioManager
 
 TILE_SIZE = CONFIG['map']['tile_size']
 VICTORY_ROUND = 4
@@ -22,6 +23,7 @@ class InGameController:
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.records_service = RecordsService()
+        self.audio_manager = AudioManager()
         self.pause_menu_model = PauseMenuModel()
         self.pause_menu_view = PauseMenuView(screen, self.pause_menu_model)
         self._initialize_game()
@@ -57,7 +59,7 @@ class InGameController:
 
     def _calculate_enemy_count(self, level: int) -> int:
         """Calcula la cantidad de enemigos para un nivel específico en la ronda actual."""
-        n = self.current_round + (self.current_round // 3)
+        n = max(1, int(2 * log(self.current_round + 1))) # Progresión logarítmica: 1-2-3-4-4-5
         return floor(n / level)
 
     def _spawn_enemies(self):
@@ -110,6 +112,9 @@ class InGameController:
                 self.is_paused = not self.is_paused
                 if self.is_paused:
                     self.last_update_time = time.time()
+                    self.audio_manager.pause_all()
+                else:
+                    self.audio_manager.unpause_all()
                 return
             elif event.key == pygame.K_r and (self.is_dead or self.has_won):
                 self._reset_game()
@@ -124,9 +129,19 @@ class InGameController:
                         if option == "Continuar":
                             self.is_paused = False
                             self.last_update_time = time.time()
+                            self.audio_manager.unpause_all()
                         elif option == "Salir al Menú":
                             return "menu"  # Señal para volver al menú principal
                 return
+        
+        # Manejar clicks en pantallas de muerte/victoria
+        if (self.is_dead or self.has_won) and event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Click izquierdo
+                if hasattr(self.view, 'restart_button_rect') and self.view.restart_button_rect.collidepoint(event.pos):
+                    self._initialize_game()
+                elif hasattr(self.view, 'menu_button_rect') and self.view.menu_button_rect.collidepoint(event.pos):
+                    return "menu"
+            return
 
         if not self.is_paused and not self.is_dead and not self.has_won:
             if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
@@ -149,10 +164,12 @@ class InGameController:
 
     def _handle_attack(self, key):
         """Maneja los ataques del jugador."""
-        if key == pygame.K_k or key == pygame.K_x:  # Tecla K o X
-            self.player.cast_basic_attack((0,0))
-        elif key == pygame.K_l or key == pygame.K_c:  # Tecla L o C
-            self.player.cast_heavy_attack((0,0))
+        if key == pygame.K_x or key == pygame.K_k:  # Ataque básico
+            self.player.cast_basic_attack()
+            self.audio_manager.play_attack_sound()
+        elif key == pygame.K_c or key == pygame.K_l:  # Ataque pesado
+            self.player.cast_heavy_attack()
+            self.audio_manager.play_attack_sound()
 
     def update(self, dt: float):
         """Actualiza el estado del juego."""

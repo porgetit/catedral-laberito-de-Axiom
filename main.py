@@ -2,9 +2,11 @@
 import pygame
 from controllers.app_controller import AppController
 from services.config import CONFIG
+from services.audio_manager import AudioManager
 
 def run():
     pygame.init()
+    pygame.mixer.init()  # Inicializar el sistema de audio
     screen = pygame.display.set_mode((CONFIG["window"]['width'], CONFIG["window"]['height']))
     pygame.display.set_caption(CONFIG["window"]['title'])
     clock = pygame.time.Clock()

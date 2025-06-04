@@ -9,12 +9,16 @@ from views.menu_view import MenuView
 from views.scores_view import ScoresView
 from views.credits_view import CreditsView
 from services.records import RecordsService
+from services.audio_manager import AudioManager
 
 class AppController:
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         # Crear una única instancia de RecordsService para toda la app
         self.records_service = RecordsService()
+        
+        # Inicializar el AudioManager
+        self.audio_manager = AudioManager()
         
         # Crear componentes del menú
         self.menu_model = MenuModel()
@@ -32,6 +36,9 @@ class AppController:
         # Iniciar con el menú
         self.current_scene = "menu"
         self.ingame_controller = None
+        
+        # Reproducir música del menú al inicio
+        self.audio_manager.play_menu_music()
 
     def handle_event(self, event: pygame.event.Event):
         if self.current_scene == "menu":
@@ -39,6 +46,7 @@ class AppController:
             if action == "Jugar":
                 self.current_scene = "game"
                 self.ingame_controller = InGameController(self.screen)
+                self.audio_manager.play_coliseo_music()
             elif action == "Puntajes":
                 self.current_scene = "scores"
             elif action == "Créditos":
@@ -49,6 +57,7 @@ class AppController:
             result = self.ingame_controller.handle_event(event)
             if result == "menu":
                 self.current_scene = "menu"
+                self.audio_manager.play_menu_music()
         elif self.current_scene == "scores":
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.scores_view.back_button_rect.collidepoint(event.pos):

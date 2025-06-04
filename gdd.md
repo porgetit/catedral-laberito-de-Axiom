@@ -75,10 +75,50 @@ Implementados 5 niveles de enemigos con diferentes estadísticas:
 - Cálculo de dirección basado en el punto de impacto
 
 ## 🎨 Arte y Visuales
-[PLACEHOLDER PARA ARTE]
+
+### Sprites del Jugador
+- Sprites obtenidos de itch.io bajo licencia libre
+- Animaciones completas para:
+  - Movimiento en 4 direcciones para el PJ y 8 direcciones para el enemigo debido a que el enemigo persigue al jugador principal.
+  - Ataque básico
+  - Ataque pesado
+  - Muerte
+- Tamaño base: 32x32 píxeles
+- Estilo pixel art consistente con la temática del juego
+
+### Sprites de Enemigos
+- Sprites obtenidos de itch.io bajo licencia libre
+- 5 variantes de color según nivel:
+  - Nivel 1: Rojo semi-oscuro
+  - Nivel 2: Verde semi-oscuro
+  - Nivel 3: Azul semi-oscuro
+  - Nivel 4: Amarillo semi-oscuro
+  - Nivel 5: Magenta semi-oscuro
+- Animaciones para:
+  - Movimiento
+  - Ataque
+  - Muerte
+- Tamaño base: 32x32 píxeles (escalado a 90% para mejor rendimiento)
 
 ## 🔊 Audio
-[PLACEHOLDER PARA AUDIO]
+
+### Música
+- Música generada con IA a través de Mureka.ai
+- Tema principal: Atmosférico y misterioso
+- Tema de combate: Intenso y dinámico
+- Transiciones suaves entre estados
+
+### Efectos de Sonido
+- Efectos obtenidos de Sound Library (YouTube Licencia Libre)
+- Implementados para:
+  - Ataques del jugador
+  - Impactos
+  - Muerte de enemigos
+  - Victoria/Derrota
+- Sistema de audio dinámico que se adapta a la intensidad del combate
+
+### Intención Sonora
+El diseño de audio busca crear una atmósfera de misterio y suspenso, reforzando la tensión durante el combate y creando momentos de anticipación entre rondas. La música y los efectos trabajan en conjunto para mantener al jugador inmerso en la experiencia del coliseo.
 
 ## 🖥️ Interfaz
 

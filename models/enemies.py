@@ -44,7 +44,7 @@ class Enemy(Entity):
     ATTACK_ANIMATION_DELAY = 100
     DEATH_ANIMATION_DELAY = 50  # Reducido para una animación más rápida
     ATTACK_RANGE = 3
-    SCALE_FACTOR = 1.5
+    SCALE_FACTOR = 0.9  # Reducción de tamaño a los enemigos 
     render_order = 1
     _death_complete_callback = None  # Callback para notificar cuando la muerte está completa
 
@@ -258,7 +258,7 @@ class Enemy(Entity):
             current_frame = self.states[self.state][self.direction][self.attack_frame if self.attack_frame < len(self.states[self.state][self.direction]) else -1]
             current_sheet = self.get_current_sheet()
             frame = current_sheet.subsurface(pygame.Rect(current_frame))
-            frame = pygame.transform.scale(frame, (78, 93))
+            frame = pygame.transform.scale(frame, (int(78 * self.SCALE_FACTOR), int(93 * self.SCALE_FACTOR)))
             self.image = self._apply_color_tint(frame)
             return
 
@@ -269,7 +269,7 @@ class Enemy(Entity):
             current_frame = self.states[self.state][self.direction][self.frame]
             current_sheet = self.get_current_sheet()
             frame = current_sheet.subsurface(pygame.Rect(current_frame))
-            frame = pygame.transform.scale(frame, (78, 93))
+            frame = pygame.transform.scale(frame, (int(78 * self.SCALE_FACTOR), int(93 * self.SCALE_FACTOR)))
             self.image = self._apply_color_tint(frame)
 
     def _update_direction(self, dx: float, dy: float) -> None:

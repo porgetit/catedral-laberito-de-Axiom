@@ -17,11 +17,9 @@ class CreditsModel:
             "",
             "Música y Efectos de Sonido:",
             "Generados con IA",
-            "https://www.soundraw.io/",
-            "",
+            "https://www.mureka.ai",
+            "Youtube Licencia Libre:",
+            "Sound Library",
             "Assets obtenidos de:",
-            "Generados con IA",
-            "https://www.midjourney.com/",
-            "https://www.artbreeder.com/",
-            "https://www.fotor.com/"            
+            "https://itch.io"        
         ]
