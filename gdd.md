@@ -4,7 +4,18 @@
 Coliseo de Axiom es un juego de acción roguelike con vista superior donde el jugador debe enfrentarse a oleadas de enemigos en un coliseo. El objetivo es sobrevivir la mayor cantidad de tiempo posible mientras se eliminan enemigos y se acumulan puntos.
 
 ## 📖 Historia
-[PLACEHOLDER PARA HISTORIA]
+
+En el reino de Axiom, una antigua civilización que dominó las artes arcanas y la tecnología, existía un legendario coliseo donde los más valientes guerreros se enfrentaban a desafíos sobrenaturales. Este coliseo, conocido como "El Coliseo de Axiom", era más que un simple lugar de combate; era un portal entre dimensiones, un lugar donde la realidad se doblegaba y las leyes de la física se alteraban.
+
+Hace siglos, durante el apogeo de Axiom, los sabios del reino descubrieron que el coliseo era en realidad una prisión dimensional, diseñada para contener a seres de otras realidades que amenazaban con invadir su mundo. Los combates que allí se realizaban no eran meros espectáculos, sino rituales necesarios para mantener el equilibrio dimensional.
+
+Sin embargo, en su ambición por dominar estas fuerzas, los sabios de Axiom cometieron un error fatal. Intentaron controlar la energía del coliseo, lo que provocó una catástrofe dimensional. El reino entero fue consumido por un vórtice de energía arcana, y el coliseo quedó sellado en una dimensión intermedia, donde el tiempo y el espacio se distorsionan.
+
+Ahora, siglos después, tú, un guerrero elegido por los últimos vestigios de la conciencia colectiva de Axiom, has sido convocado para enfrentar el desafío definitivo. Tu misión es adentrarte en el Coliseo de Axiom y enfrentarte a las criaturas que han logrado escapar de sus celdas dimensionales. Cada ronda que superes te acercará más a la verdad sobre lo que realmente sucedió con Axiom y, quizás, a la posibilidad de restaurar el equilibrio dimensional.
+
+Los enemigos que enfrentarás no son meras criaturas, sino manifestaciones de las diferentes facetas de la energía arcana que se descontroló durante la catástrofe. Cada nivel de enemigo representa una frecuencia diferente de esta energía, desde las más básicas (rojo semi-oscuro) hasta las más poderosas y corruptas (magenta semi-oscuro).
+
+Tu viaje a través del coliseo no es solo una prueba de habilidad, sino una odisea para descubrir la verdad sobre el destino de Axiom y, posiblemente, encontrar una manera de restaurar el equilibrio entre las dimensiones. ¿Podrás sobrevivir a los desafíos del coliseo y desvelar los secretos que se ocultan en sus profundidades?
 
 ## 🎯 Gameplay
 
