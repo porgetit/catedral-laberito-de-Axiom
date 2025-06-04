@@ -115,8 +115,17 @@ class InGameController:
                             self.is_paused = False
                             self.last_update_time = time.time()
                         elif option == "Salir al Menú":
-                            return "menu"  # Señal para volver al menú principal
+                            return "menu"
                 return
+
+        # Manejar clicks en pantallas de muerte/victoria
+        if (self.is_dead or self.has_won) and event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Click izquierdo
+                if hasattr(self.view, 'restart_button_rect') and self.view.restart_button_rect.collidepoint(event.pos):
+                    self._initialize_game()
+                elif hasattr(self.view, 'menu_button_rect') and self.view.menu_button_rect.collidepoint(event.pos):
+                    return "menu"
+            return
 
         if not self.is_paused and not self.is_dead and not self.has_won:
             if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
@@ -155,14 +164,23 @@ class InGameController:
                 elapsed = current_time - self.countdown_start_time
                 if elapsed >= self.countdown_time:
                     self.countdown_active = False
-                return  # No actualizar el juego mientras el contador está activo
+                return
             
             self.game_time += current_time - self.last_update_time
             self.last_update_time = current_time
             
-            # Actualizar puntos por tiempo (1 punto por segundo)
+            # Los puntos ahora se calculan al guardar el record
             self.points = int(self.game_time)
             
+            # Si el jugador muere o gana, guardar el puntaje
+            if (self.player.hp <= 0 and not self.is_dead) or \
+               (self.current_round > VICTORY_ROUND and not self.has_won):
+                self.records_service.add_record(self.game_time)
+                if self.player.hp <= 0:
+                    self.is_dead = True
+                else:
+                    self.has_won = True
+
             # Verificar si el jugador está muerto
             if self.player.hp <= 0 and not self.is_dead:
                 self.is_dead = True

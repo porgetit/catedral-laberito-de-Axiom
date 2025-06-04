@@ -208,17 +208,36 @@ class InGameView:
         attacks_title = self.font.render("Ataques:", True, TITLE_COLOR)
         self.screen.blit(attacks_title, (PANEL_PADDING, y_offset))
         y_offset += line_height
-        
+    
         # Golpe liviano
-        basic_attack_text = f"{CONFIG['attacks']['melee']['basic']['name']} (K)"
+        basic_attack_text = f"{CONFIG['attacks']['melee']['basic']['name']} (K - X)"
         basic_attack_surface = self.font.render(basic_attack_text, True, TEXT_COLOR)
         self.screen.blit(basic_attack_surface, (PANEL_PADDING, y_offset))
         y_offset += line_height
         
         # Golpe pesado
-        heavy_attack_text = f"{CONFIG['attacks']['melee']['heavy']['name']} (L)"
+        heavy_attack_text = f"{CONFIG['attacks']['melee']['heavy']['name']} (L - C)"
         heavy_attack_surface = self.font.render(heavy_attack_text, True, TEXT_COLOR)
         self.screen.blit(heavy_attack_surface, (PANEL_PADDING, y_offset))
+        y_offset += line_height * 2  # Espacio adicional antes de los controles
+
+        # Información de movimiento
+        movement_title = self.font.render("Movimiento:", True, TITLE_COLOR)
+        self.screen.blit(movement_title, (PANEL_PADDING, y_offset))
+        y_offset += line_height
+
+        # Controles de movimiento con símbolos ASCII
+        controls = [
+            "W - Flecha Arriba",
+            "S - Flecha Abajo",
+            "A - Flecha Izquierda",
+            "D - Flecha Derecha"
+        ]
+
+        for control in controls:
+            control_surface = self.font.render(control, True, TEXT_COLOR)
+            self.screen.blit(control_surface, (PANEL_PADDING, y_offset))
+            y_offset += line_height
 
     def _draw_countdown(self, countdown_time: float):
         """Dibuja el contador inicial en el centro de la pantalla."""
@@ -238,8 +257,8 @@ class InGameView:
         """Dibuja la pantalla de muerte."""
         # Crear una superficie semi-transparente
         overlay = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
-        overlay.fill((0, 0, 0)) # TODO: Direccionar el color del fondo a config.yaml
-        overlay.set_alpha(192)  # Más oscuro que la pausa
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(192)
         self.screen.blit(overlay, (MARGIN_LEFT, MARGIN_TOP))
         
         # Título
@@ -248,21 +267,41 @@ class InGameView:
         self.screen.blit(title, title_rect)
         
         # Estadísticas
-        stats_y = MARGIN_TOP + GAME_HEIGHT//2
-        line_height = 40
-        
-        # Puntos finales
         points = int(game_time)
         points_text = f"Puntos finales: {points}"
         points_surface = self.title_font.render(points_text, True, (255, 255, 255))
-        points_rect = points_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y))
+        points_rect = points_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2))
         self.screen.blit(points_surface, points_rect)
         
-        # Mensaje de reinicio
-        restart_text = "Presiona R para reiniciar"
-        restart_surface = self.font.render(restart_text, True, (200, 200, 200))
-        restart_rect = restart_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y + line_height))
-        self.screen.blit(restart_surface, restart_rect)
+        # Botones
+        button_width = 200
+        button_height = 50
+        button_spacing = 20
+        start_y = MARGIN_TOP + GAME_HEIGHT//2 + 60
+        
+        # Botón Reiniciar
+        self.restart_button_rect = pygame.Rect(
+            MARGIN_LEFT + GAME_WIDTH//2 - button_width - button_spacing//2,
+            start_y,
+            button_width,
+            button_height
+        )
+        pygame.draw.rect(self.screen, (100, 100, 100), self.restart_button_rect, border_radius=10)
+        restart_text = self.font.render("Reiniciar", True, (255, 255, 255))
+        restart_text_rect = restart_text.get_rect(center=self.restart_button_rect.center)
+        self.screen.blit(restart_text, restart_text_rect)
+        
+        # Botón Menú Principal
+        self.menu_button_rect = pygame.Rect(
+            MARGIN_LEFT + GAME_WIDTH//2 + button_spacing//2,
+            start_y,
+            button_width,
+            button_height
+        )
+        pygame.draw.rect(self.screen, (100, 100, 100), self.menu_button_rect, border_radius=10)
+        menu_text = self.font.render("Menú Principal", True, (255, 255, 255))
+        menu_text_rect = menu_text.get_rect(center=self.menu_button_rect.center)
+        self.screen.blit(menu_text, menu_text_rect)
 
     def _draw_victory_screen(self, game_time: float):
         """Dibuja la pantalla de victoria."""
@@ -278,21 +317,41 @@ class InGameView:
         self.screen.blit(title, title_rect)
         
         # Estadísticas
-        stats_y = MARGIN_TOP + GAME_HEIGHT//2
-        line_height = 40
-        
-        # Puntos finales
         points = int(game_time)
         points_text = f"Puntos finales: {points}"
         points_surface = self.title_font.render(points_text, True, (255, 255, 255))
-        points_rect = points_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y))
+        points_rect = points_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, MARGIN_TOP + GAME_HEIGHT//2))
         self.screen.blit(points_surface, points_rect)
         
-        # Mensaje de reinicio
-        restart_text = "Presiona R para reiniciar"
-        restart_surface = self.font.render(restart_text, True, (200, 200, 200))
-        restart_rect = restart_surface.get_rect(center=(MARGIN_LEFT + GAME_WIDTH//2, stats_y + line_height))
-        self.screen.blit(restart_surface, restart_rect)
+        # Botones (mismo código que en death screen)
+        button_width = 200
+        button_height = 50
+        button_spacing = 20
+        start_y = MARGIN_TOP + GAME_HEIGHT//2 + 60
+        
+        # Botón Reiniciar
+        self.restart_button_rect = pygame.Rect(
+            MARGIN_LEFT + GAME_WIDTH//2 - button_width - button_spacing//2,
+            start_y,
+            button_width,
+            button_height
+        )
+        pygame.draw.rect(self.screen, (100, 100, 100), self.restart_button_rect, border_radius=10)
+        restart_text = self.font.render("Reiniciar", True, (255, 255, 255))
+        restart_text_rect = restart_text.get_rect(center=self.restart_button_rect.center)
+        self.screen.blit(restart_text, restart_text_rect)
+        
+        # Botón Menú Principal
+        self.menu_button_rect = pygame.Rect(
+            MARGIN_LEFT + GAME_WIDTH//2 + button_spacing//2,
+            start_y,
+            button_width,
+            button_height
+        )
+        pygame.draw.rect(self.screen, (100, 100, 100), self.menu_button_rect, border_radius=10)
+        menu_text = self.font.render("Menú Principal", True, (255, 255, 255))
+        menu_text_rect = menu_text.get_rect(center=self.menu_button_rect.center)
+        self.screen.blit(menu_text, menu_text_rect)
 
     def _draw_pause_message(self):
         """Dibuja el mensaje de pausa."""

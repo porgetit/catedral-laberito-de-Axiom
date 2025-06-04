@@ -3,7 +3,7 @@
 class MenuModel:
     def __init__(self):
         self.title = "Coliseo de Axiom"
-        self.button_labels = ["Jugar", "Puntajes", "Controles", "Créditos", "Salir"]
+        self.button_labels = ["Jugar", "Puntajes", "Créditos", "Salir"]
         self.selected_option = None # Podría usarse para saber qué opción se eligió
         # En un juego más complejo, aquí iría el estado del juego, puntajes, etc.
 

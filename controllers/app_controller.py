@@ -4,13 +4,16 @@ from controllers.ingame_controller import InGameController
 from controllers.menu_controller import MenuController
 from models.menu import MenuModel
 from models.scores import ScoresModel
+from models.credits import CreditsModel
 from views.menu_view import MenuView
 from views.scores_view import ScoresView
+from views.credits_view import CreditsView
 from services.records import RecordsService
 
 class AppController:
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
+        # Crear una única instancia de RecordsService para toda la app
         self.records_service = RecordsService()
         
         # Crear componentes del menú
@@ -18,9 +21,13 @@ class AppController:
         self.menu_view = MenuView(screen, self.menu_model)
         self.menu_controller = MenuController(self.menu_model)
         
-        # Crear componentes de puntajes
+        # Crear componentes de puntajes usando el mismo RecordsService
         self.scores_model = ScoresModel(self.records_service)
         self.scores_view = ScoresView(screen, self.scores_model)
+        
+        # Crear componentes de créditos
+        self.credits_model = CreditsModel()
+        self.credits_view = CreditsView(screen, self.credits_model)
         
         # Iniciar con el menú
         self.current_scene = "menu"
@@ -34,6 +41,8 @@ class AppController:
                 self.ingame_controller = InGameController(self.screen)
             elif action == "Puntajes":
                 self.current_scene = "scores"
+            elif action == "Créditos":
+                self.current_scene = "credits"
             elif action == "Salir":
                 return False
         elif self.current_scene == "game":
@@ -44,6 +53,10 @@ class AppController:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.scores_view.back_button_rect.collidepoint(event.pos):
                     self.current_scene = "menu"
+        elif self.current_scene == "credits":
+            # Manejar todos los eventos de la vista de créditos
+            if self.credits_view.handle_event(event):
+                self.current_scene = "menu"
         return True
 
     def update(self, dt: float):
@@ -57,4 +70,6 @@ class AppController:
             self.ingame_controller.render()
         elif self.current_scene == "scores":
             self.scores_view.draw()
+        elif self.current_scene == "credits":
+            self.credits_view.draw()
         pygame.display.flip()

@@ -27,17 +27,11 @@ class MenuController:
     def perform_action(self, action_label):
         # Aquí defines qué hace cada botón
         if action_label == "Jugar":
-            print(f"Acción: Iniciar el juego...")
-            # Aquí llamarías a la lógica para iniciar el juego
+            return "Jugar"
         elif action_label == "Puntajes":
             return "Puntajes"
-            # Aquí mostrarías la pantalla de puntajes
-        elif action_label == "Controles":
-            print(f"Acción: Mostrar controles...")
         elif action_label == "Créditos":
-            print(f"Acción: Mostrar créditos...")
+            return "Créditos"
         elif action_label == "Salir":
-            print(f"Acción: Saliendo del juego...")
             self.running = False
-            return "Salir" # Señal para que el bucle principal termine
-        return action_label # Devolver la etiqueta de la acción para posible manejo externo
+            return "Salir"
